@@ -1,0 +1,40 @@
+@page "/product/{Id:guid}"
+@inject IProductService ProductService
+@using RajLaxmiElectrical.Web.Models
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private Product? product;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        product = await ProductService.GetByIdAsync(Id);
+    }
+}
+
+@if (product == null)
+{
+    <p>Product not found.</p>
+}
+else
+{
+    <div>
+        <h2>@product.Name</h2>
+        <img src="@product.ImageUrl" alt="@product.Name" width="300" />
+        <p>@product.Description</p>
+        <p>Price: @product.Price.ToString("C")</p>
+        <p>Stock: @(product.Inventory?.Quantity ?? 0)</p>
+
+        <button @onclick="AddToCart">Add to cart</button>
+    </div>
+}
+
+@code {
+    void AddToCart()
+    {
+        // TODO: add to cart logic (session-based or DB-backed)
+        Console.WriteLine("Add to cart clicked");
+    }
+}

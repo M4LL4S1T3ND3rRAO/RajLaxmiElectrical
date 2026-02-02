@@ -1,0 +1,50 @@
+@page "/admin/products"
+@attribute [Authorize(Roles = "Admin")]
+@inject IProductService ProductService
+
+<h3>Admin — Products</h3>
+
+<button @onclick="CreateNew">Create new product</button>
+
+<table>
+    <thead>
+        <tr><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        @if (products != null)
+        {
+            @foreach (var p in products)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Price</td>
+                    <td>@(p.Inventory?.Quantity ?? 0)</td>
+                    <td>
+                        <button @onclick="() => Edit(p.Id)">Edit</button>
+                        <button @onclick="() => Delete(p.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<RajLaxmiElectrical.Web.Models.Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.SearchAsync(null, null, null, null, 1, 100);
+    }
+
+    void CreateNew() => Navigation.NavigateTo("/admin/products/new");
+    void Edit(Guid id) => Navigation.NavigateTo($"/admin/products/edit/{id}");
+    async Task Delete(Guid id)
+    {
+        await ProductService.DeleteAsync(id);
+        products = await ProductService.SearchAsync(null, null, null, null);
+        StateHasChanged();
+    }
+
+    [Inject] NavigationManager Navigation { get; set; } = default!;
+}

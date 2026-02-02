@@ -1,0 +1,20 @@
+@page "/checkout"
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager Navigation
+
+<h3>Checkout</h3>
+
+<p>This page demonstrates client-side integration with PayPal JS SDK. The secure order creation & capture happen via server endpoints (see README for server-side PayPal SDK usage).</p>
+
+<div id="paypal-button-container"></div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // The PayPal script should be loaded via _Host or layout with client ID from configuration (PayPal sandbox)
+            // This is a placeholder — actual integration requires rendering the JS SDK with your client id
+        }
+    }
+}

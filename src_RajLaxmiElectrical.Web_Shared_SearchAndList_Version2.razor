@@ -1,0 +1,38 @@
+@inject IProductService ProductService
+
+<input placeholder="Search products..." @bind="query" @bind:event="oninput" />
+<button @onclick="Search">Search</button>
+
+@if (products == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="product-grid">
+        @foreach (var p in products)
+        {
+            <div class="product-card">
+                <img src="@p.ImageUrl" alt="@p.Name" width="150" />
+                <h4>@p.Name</h4>
+                <p>@p.Price.ToString("C")</p>
+                <a href="@($"/product/{p.Id}")">View</a>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private string? query;
+    private IEnumerable<RajLaxmiElectrical.Web.Models.Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.SearchAsync(null, null, null, null, 1, 20);
+    }
+
+    async Task Search()
+    {
+        products = await ProductService.SearchAsync(query, null, null, null, 1, 20);
+    }
+}
